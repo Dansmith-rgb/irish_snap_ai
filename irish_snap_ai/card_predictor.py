@@ -16,8 +16,6 @@ def load_data():
     color_mode = "grayscale"
     train_ds = keras.preprocessing.image_dataset_from_directory(
         "images",
-        validation_split=0.2,
-        subset="training",
         image_size=image_size,
         batch_size=batch_size,
         color_mode=color_mode,
@@ -27,7 +25,7 @@ def load_data():
     )
 
     val_ds = keras.preprocessing.image_dataset_from_directory(
-        "images",
+        "images_val",
         validation_split=0.2,
         subset="validation",
         image_size=image_size,
@@ -46,19 +44,20 @@ def create_model(class_names, train_ds, val_ds):
     num_classes = len(class_names)
 
     
-
+    """
     data_augmentation = keras.Sequential(
    [
     
-    RandomRotation(0.1, input_shape=(300, 200, 1)),
+    RandomRotation(0.5, input_shape=(300, 200, 1)),
     RandomContrast(0.5)
     #layers.RandomZoom(0.1),
    ]
   )
+    """
     #CNN Model
     model = models.Sequential()
-    model.add(data_augmentation)
-    model.add(Rescaling(1./255))
+    #model.add(data_augmentation)
+    model.add(Rescaling(1./255, input_shape=(300, 200, 1)))
     model.add(layers.Conv2D(16, 3, padding='same', activation='relu'))
     model.add(layers.MaxPooling2D())
     model.add(layers.Conv2D(32, 3, padding='same', activation='relu'))
