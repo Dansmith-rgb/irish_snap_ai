@@ -1,7 +1,7 @@
 from sklearn.utils import validation
 import tensorflow as tf
 from tensorflow.keras import layers, models
-from tensorflow.keras.layers.experimental.preprocessing import Rescaling, RandomRotation
+from tensorflow.keras.layers.experimental.preprocessing import Rescaling, RandomRotation, RandomContrast
 from sklearn.model_selection import train_test_split
 import keras
 import os
@@ -19,10 +19,11 @@ def load_data():
         validation_split=0.2,
         subset="training",
         image_size=image_size,
-        batch_size=32,
+        batch_size=batch_size,
         color_mode=color_mode,
         labels="inferred",
-        seed=1337 
+        seed=1337,
+        shuffle=True
     )
 
     val_ds = keras.preprocessing.image_dataset_from_directory(
@@ -30,23 +31,27 @@ def load_data():
         validation_split=0.2,
         subset="validation",
         image_size=image_size,
-        batch_size=32,
+        batch_size=batch_size,
         color_mode=color_mode,
-        seed=1337
+        seed=1337,
+        shuffle=True,
     )
 
     return train_ds, val_ds
 
 train_ds, val_ds = load_data()
 class_names = train_ds.class_names
-"""
+
 def create_model(class_names, train_ds, val_ds):
     num_classes = len(class_names)
+
+    
 
     data_augmentation = keras.Sequential(
    [
     
     RandomRotation(0.1, input_shape=(300, 200, 1)),
+    RandomContrast(0.5)
     #layers.RandomZoom(0.1),
    ]
   )
@@ -54,12 +59,14 @@ def create_model(class_names, train_ds, val_ds):
     model = models.Sequential()
     model.add(data_augmentation)
     model.add(Rescaling(1./255))
-    model.add(layers.Conv2D(16, 3, activation='relu'))
+    model.add(layers.Conv2D(16, 3, padding='same', activation='relu'))
     model.add(layers.MaxPooling2D())
-    model.add(layers.Conv2D(32, 3, activation='relu'))
+    model.add(layers.Conv2D(32, 3, padding='same', activation='relu'))
     model.add(layers.MaxPooling2D())
-    model.add(layers.Conv2D(64, 3, activation='relu'))
+    model.add(layers.Dropout(0.1))
+    model.add(layers.Conv2D(64, 3, padding='same', activation='relu'))
     model.add(layers.MaxPool2D())
+    model.add(layers.Dropout(0.2))
     model.add(layers.Flatten())
     model.add(layers.Dense(128, activation='relu')),
     model.add(layers.Dense(num_classes))
@@ -70,7 +77,7 @@ def create_model(class_names, train_ds, val_ds):
 
     model.summary()
 
-    epochs=100
+    epochs=150
     history = model.fit(train_ds, validation_data=val_ds, epochs=epochs)
 
     acc = history.history['accuracy']
@@ -103,7 +110,7 @@ def create_model(class_names, train_ds, val_ds):
     tflite_model = converter.convert()
     open("model.tflite", "wb").write(tflite_model)
     
-"""
+
 #create_model(class_names, train_ds, val_ds)
 
 def predict_card(model, img):
@@ -119,3 +126,4 @@ def predict_card(model, img):
     )
 
     return class_names[np.argmax(score)]
+    

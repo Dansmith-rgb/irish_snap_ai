@@ -5,7 +5,7 @@ import pytesseract
 import numpy as np
 import os
 
-path = "C:/Users/Daniel/OneDrive/Documents/coding/irish_snap_ai/images"
+
 
 cap = cv2.VideoCapture(0)
 
@@ -41,7 +41,7 @@ def find_cards(image):
         peri = cv2.arcLength(contours_sort[i],True)
         approx = cv2.approxPolyDP(contours_sort[i],0.01*peri,True)
         
-        if ((size > 3200) and (size<3300)
+        if ((size > 3200)
             and (hierarchy_sort[i][3] == -1) and (len(approx) == 4)):
 
             cnt_is_card[i] = 1
@@ -146,17 +146,17 @@ while True:
     #print(card_suit)
     if card_rank != '':
         ret, frame = cap.read()
-        frame_grey = get_grayscale(frame)
+        #frame_grey = get_grayscale(frame)
             
 
-        frame_blur = cv2.GaussianBlur(frame_grey, (5,5),0)
+        frame_blur = cv2.GaussianBlur(frame, (5,5),0)
 
         edged = cv2.Canny(frame_blur, 30, 200)
-        thresh = cv2.threshold(edged, 210,230, cv2.THRESH_BINARY)[1]
+        thresh = cv2.threshold(edged, 210,230, cv2.THRESH_BINARY_INV)[1]
             
             
         print("qww")    
-        contours_sort, cnt_is_card = find_cards(thresh)
+        contours_sort, cnt_is_card = find_cards(edged)
         #print(cnt_is_card)
         #print(contours_sort)
 
@@ -167,7 +167,8 @@ while True:
                     print("hello!1")
                     card = preprocess(contours_sort[i], frame)
                     print("hello")
-                    s = cv2.imwrite(os.path.join(path, f'{card_rank}_of_hearts_3.png'), card)
+                    path = f"C:/Users/Daniel/OneDrive/Documents/coding/irish_snap_ai/images/{card_rank}_of_spades"
+                    s = cv2.imwrite(os.path.join(path, f'{card_rank}_of_spades_2.png'), card)
                         
         else:
             pass

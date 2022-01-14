@@ -1,4 +1,3 @@
-
 import pdb
 import cv2
 import pytesseract
@@ -172,15 +171,14 @@ while True:
                     prev_number.append(card_number)
                     card_class.append(suit)
                 else:
-                    del prev_number[:1]
-                    del card_class[:1]
+                    del prev_number[:-1]
+                    del card_class[:-1]
+                    
 
     if len(prev_number) > 0:
         
-        if len(prev_number) == 1:
+        if len(prev_number) > 1:
             print(prev_number)
-            continue
-        else:
             class_equal = all(x == card_class[0] for x in card_class)
             print("yo")
             if not class_equal:
@@ -188,12 +186,15 @@ while True:
                 print(snap)
                 if snap:
                     print("SNAP!!!")
+            
+        else:
+            print("pass")
                 
 
     
     
-    
-    cv2.imshow('frame', frame)
+    if len(cards) >= 1:
+        cv2.imshow('frame', frame)
     #cv2.imshow('frame2', ROI)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -201,4 +202,3 @@ while True:
 
 cap.release()
 cv2.destroyAllWindows()
-
