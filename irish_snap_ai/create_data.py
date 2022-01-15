@@ -167,8 +167,8 @@ while True:
                     print("hello!1")
                     card = preprocess(contours_sort[i], frame)
                     print("hello")
-                    path = f"C:/Users/Daniel/OneDrive/Documents/coding/irish_snap_ai/images/{card_rank}_of_spades"
-                    s = cv2.imwrite(os.path.join(path, f'{card_rank}_of_spades_2.png'), card)
+                    path = f"C:/Users/Daniel/OneDrive/Documents/coding/irish_snap_ai/images/{card_rank}_of_diamonds"
+                    s = cv2.imwrite(os.path.join(path, f'{card_rank}_of_diamonds_2.png'), card)
                         
         else:
             pass

@@ -44,19 +44,9 @@ def create_model(class_names, train_ds, val_ds):
     num_classes = len(class_names)
 
     
-    """
-    data_augmentation = keras.Sequential(
-   [
     
-    RandomRotation(0.5, input_shape=(300, 200, 1)),
-    RandomContrast(0.5)
-    #layers.RandomZoom(0.1),
-   ]
-  )
-    """
     #CNN Model
     model = models.Sequential()
-    #model.add(data_augmentation)
     model.add(Rescaling(1./255, input_shape=(300, 200, 1)))
     model.add(layers.Conv2D(16, 3, padding='same', activation='relu'))
     model.add(layers.MaxPooling2D())
